@@ -543,7 +543,7 @@ class AwsCognitoClient
     public function refreshToken(string $refreshToken, string $username)
     {
         try {
-            $response = $this->client->initiateAuth([
+            return $this->client->initiateAuth([
                 'AuthFlow' => 'REFRESH_TOKEN_AUTH',
                 'ClientId' => $this->clientId,
                 'UserPoolId' => $this->poolId,
@@ -552,8 +552,6 @@ class AwsCognitoClient
                     'REFRESH_TOKEN' => $refreshToken
                 ],
             ]);
-
-            return $response->get('AuthenticationResult');
         } catch (CognitoIdentityProviderException $e) {
 
             if ($e->getAwsErrorCode() === self::USER_NOT_FOUND) {

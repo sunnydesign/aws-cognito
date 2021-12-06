@@ -11,7 +11,9 @@
 
 namespace Sunnydesign\Cognito\Auth;
 
+use Sunnydesign\Cognito\AwsCognitoClaim;
 use Sunnydesign\Cognito\AwsCognitoClient;
+use Sunnydesign\Cognito\AwsCognitoManager;
 
 trait RefreshToken
 {
@@ -19,12 +21,25 @@ trait RefreshToken
     /**
      * @param string $refreshToken
      * @param string $username
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
      * @return mixed
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Exception
      */
-    protected function refreshToken(string $refreshToken, string $username)
+    protected function refreshToken(
+        string $refreshToken,
+        string $username,
+        \Illuminate\Contracts\Auth\Authenticatable $user
+    )
     {
-        return app()->make(AwsCognitoClient::class)->refreshToken($refreshToken, $username);
+        $response = app()->make(AwsCognitoClient::class)->refreshToken($refreshToken, $username);
+
+        $claim = new AwsCognitoClaim($response, $user, $username);
+
+        $manager = app()->make(AwsCognitoManager::class);
+        $manager->encode($claim)->store();
+
+        return $response;
     } //Function ends
 
 } //Trait ends

@@ -291,7 +291,8 @@ class AwsCognitoClient
      * Register a user and send them an email to set their password.
      * https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminCreateUser.html
      *
-     * @param $username
+     * @param string $username
+     * @param string|null $password
      * @param array $attributes
      * @param array $clientMetadata (optional)
      * @return bool
@@ -470,7 +471,7 @@ class AwsCognitoClient
 
     public function confirmSignUp($username)
     {
-        $this->client->adminConfirmSignUp([
+        return $this->client->adminConfirmSignUp([
             'UserPoolId' => $this->poolId,
             'Username' => $username,
         ]);

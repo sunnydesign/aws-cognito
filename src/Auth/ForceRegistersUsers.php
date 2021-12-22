@@ -52,13 +52,13 @@ trait ForceRegistersUsers
         //Register the user in Cognito
         $userKey = $request->has('username')?'username':'email';
 
-        //Temporary Password paramter
+        //Temporary Password parameter
         $password = $request->has('password')?$request['password']:null;
 
         $result = app()->make(AwsCognitoClient::class)->register($request[$userKey], $password, $attributes);
 
         if ($result) {
-            return app()->make(AwsCognitoClient::class)->adminConfirmSignUp($request[$userKey]);
+            return app()->make(AwsCognitoClient::class)->confirmSignUp($request[$userKey]);
         }
     }
 

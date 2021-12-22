@@ -25,9 +25,9 @@ trait ForceRegistersUsers
     /**
      * Handle a registration request for the application.
      *
-     * @param  \Illuminate\Support\Collection  $request
+     * @param \Illuminate\Support\Collection $request
      *
-     * @return \Illuminate\Http\Response
+     * @return void
      * @throws InvalidUserFieldException
      */
     public function forceCreateCognitoUser(Collection $request)
@@ -55,7 +55,11 @@ trait ForceRegistersUsers
         //Temporary Password paramter
         $password = $request->has('password')?$request['password']:null;
 
-        return app()->make(AwsCognitoClient::class)->register($request[$userKey], $password, $attributes);
+        $result = app()->make(AwsCognitoClient::class)->register($request[$userKey], $password, $attributes);
+
+        if ($result) {
+            return app()->make(AwsCognitoClient::class)->adminConfirmSignUp($request[$userKey]);
+        }
     }
 
 }

@@ -189,28 +189,17 @@ class AwsCognitoClient
      * @param $password
      * @param array $attributes
      *
-     * @return bool
+     * @return \Aws\Result
      */
     public function register($username, $password, array $attributes = [])
     {
-
-        try {
-            $response = $this->client->signUp([
-                'ClientId' => $this->clientId,
-                'Password' => $password,
-                'SecretHash' => $this->cognitoSecretHash($username),
-                'UserAttributes' => $this->formatAttributes($attributes),
-                'Username' => $username,
-            ]);
-        } catch (CognitoIdentityProviderException $e) {
-            if ($e->getAwsErrorCode() === self::USERNAME_EXISTS) {
-                return false;
-            } //End if
-
-            throw $e;
-        }
-
-        return (bool)$response['UserConfirmed'];
+        return $this->client->signUp([
+            'ClientId' => $this->clientId,
+            'Password' => $password,
+            'SecretHash' => $this->cognitoSecretHash($username),
+            'UserAttributes' => $this->formatAttributes($attributes),
+            'Username' => $username,
+        ]);
     } //Function ends
 
 
